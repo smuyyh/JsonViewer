@@ -1,17 +1,14 @@
-language: android
-jdk: oraclejdk7
-
-branches:
-  only:
-  - master
-
+language: android  
 android:
   components:
-  - platform-tools
-  - tools
-  - build-tools-26.0.0
-  - android-26
-  - extra-android-m2repository
-  licenses:
-  - android-sdk-license-.+
-  - google-gdk-license-.+
+    - tools
+    - build-tools-26.0.0
+    - android-26
+    - extra-android-m2repository
+    - extra-android-support
+
+before_install:
+  - chmod +x gradlew
+
+script:  
+  - ./gradlew assembleRelease
