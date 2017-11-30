@@ -17,4 +17,4 @@ android:
   - google-gdk-license-.+
 
 script:
-  - ./gradlew cleanTest testDebugUnitTestCoverage
+  - ./gradlew assembleDebug
