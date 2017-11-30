@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             mRecyclewView.bindJson(result);
-                            Log.i("-----", Utils.jsonFormat(result));
                         }
                     });
                 } catch (IOException e) {
