@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yuyh.jsonviewer.library.R;
+import com.yuyh.jsonviewer.library.adapter.BaseJsonViewerAdapter;
 
 /**
  * Created by yuyuhang on 2017/11/29.
@@ -55,6 +56,7 @@ public class JsonItemView extends LinearLayout {
 
         mTvLeft.setTextSize(TEXT_SIZE_DP);
         mTvRight.setTextSize(TEXT_SIZE_DP);
+        mTvRight.setTextColor(BaseJsonViewerAdapter.BRACES_COLOR);
         mTvIcon.setTextSize(TEXT_SIZE_DP - 4);
     }
 

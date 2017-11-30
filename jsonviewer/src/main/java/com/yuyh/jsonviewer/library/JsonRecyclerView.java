@@ -58,27 +58,27 @@ public class JsonRecyclerView extends RecyclerView {
     }
 
     public void setKeyColor(int color) {
-        BaseJsonViewerAdapter.keySpan = new ForegroundColorSpan(color);
+        BaseJsonViewerAdapter.KEY_COLOR = color;
     }
 
     public void setValueTextColor(int color) {
-        BaseJsonViewerAdapter.textSpan = new ForegroundColorSpan(color);
+        BaseJsonViewerAdapter.TEXT_COLOR = color;
     }
 
     public void setValueNumberColor(int color) {
-        BaseJsonViewerAdapter.numberSpan = new ForegroundColorSpan(color);
+        BaseJsonViewerAdapter.NUMBER_COLOR = color;
     }
 
     public void setValueUrlColor(int color) {
-        BaseJsonViewerAdapter.urlSpan = new ForegroundColorSpan(color);
+        BaseJsonViewerAdapter.URL_COLOR = color;
     }
 
     public void setValueNullColor(int color) {
-        BaseJsonViewerAdapter.nullSpan = new ForegroundColorSpan(color);
+        BaseJsonViewerAdapter.NUMBER_COLOR = color;
     }
 
     public void setBracesColor(int color) {
-        BaseJsonViewerAdapter.bracesSpan = new ForegroundColorSpan(color);
+        BaseJsonViewerAdapter.BRACES_COLOR = color;
     }
 
     public void setTextSize(int sizeDP) {

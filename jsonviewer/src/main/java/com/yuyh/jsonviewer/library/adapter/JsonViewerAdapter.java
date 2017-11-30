@@ -3,6 +3,7 @@ package com.yuyh.jsonviewer.library.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -75,6 +76,8 @@ public class JsonViewerAdapter extends BaseJsonViewerAdapter<JsonViewerAdapter.J
                 itemView.hideIcon();
                 itemView.showRight("}");
                 return;
+            } else if (mJSONObject.names() == null) {
+                return;
             }
 
             String key = mJSONObject.names().optString(position - 1); // 遍历key
@@ -92,8 +95,7 @@ public class JsonViewerAdapter extends BaseJsonViewerAdapter<JsonViewerAdapter.J
                 itemView.hideIcon();
                 itemView.showRight("[");
                 return;
-            }
-            if (position == getItemCount() - 1) {
+            } else if (position == getItemCount() - 1) {
                 itemView.hideLeft();
                 itemView.hideIcon();
                 itemView.showRight("]");
@@ -112,7 +114,11 @@ public class JsonViewerAdapter extends BaseJsonViewerAdapter<JsonViewerAdapter.J
     @Override
     public int getItemCount() {
         if (mJSONObject != null) {
-            return mJSONObject.names().length() + 2;
+            if (mJSONObject.names() != null) {
+                return mJSONObject.names().length() + 2;
+            } else {
+                return 2;
+            }
         }
         if (mJSONArray != null) {
             return mJSONArray.length() + 2;
@@ -132,8 +138,8 @@ public class JsonViewerAdapter extends BaseJsonViewerAdapter<JsonViewerAdapter.J
     private void handleJsonObject(String key, Object value, JsonItemView itemView, boolean appendComma, int hierarchy) {
         SpannableStringBuilder keyBuilder = new SpannableStringBuilder(Utils.getHierarchyStr(hierarchy));
         keyBuilder.append("\"").append(key).append("\"").append(":");
-        keyBuilder.setSpan(keySpan, 0, keyBuilder.length() - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        keyBuilder.setSpan(bracesSpan, keyBuilder.length() - 1, keyBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        keyBuilder.setSpan(new ForegroundColorSpan(KEY_COLOR), 0, keyBuilder.length() - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        keyBuilder.setSpan(new ForegroundColorSpan(BRACES_COLOR), keyBuilder.length() - 1, keyBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         itemView.showLeft(keyBuilder);
 
@@ -164,32 +170,34 @@ public class JsonViewerAdapter extends BaseJsonViewerAdapter<JsonViewerAdapter.J
         SpannableStringBuilder valueBuilder = new SpannableStringBuilder();
         if (value instanceof Number) {
             valueBuilder.append(value.toString());
-            valueBuilder.setSpan(numberSpan, 0, valueBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            valueBuilder.setSpan(new ForegroundColorSpan(NUMBER_COLOR), 0, valueBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         } else if (value instanceof JSONObject) {
             itemView.showIcon(true);
             valueBuilder.append("Object{...}");
+            valueBuilder.setSpan(new ForegroundColorSpan(BRACES_COLOR), 0, valueBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             itemView.setIconClickListener(new JsonItemClickListener(value, itemView, appendComma, hierarchy + 1));
         } else if (value instanceof JSONArray) {
             itemView.showIcon(true);
             valueBuilder.append("Array[").append(String.valueOf(((JSONArray) value).length())).append("]");
-            valueBuilder.setSpan(bracesSpan, 0, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            valueBuilder.setSpan(numberSpan, 6, valueBuilder.length() - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            valueBuilder.setSpan(bracesSpan, valueBuilder.length() - 1, valueBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            int len = valueBuilder.length();
+            valueBuilder.setSpan(new ForegroundColorSpan(BRACES_COLOR), 0, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            valueBuilder.setSpan(new ForegroundColorSpan(NUMBER_COLOR), 6, len - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            valueBuilder.setSpan(new ForegroundColorSpan(BRACES_COLOR), len - 1, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             itemView.setIconClickListener(new JsonItemClickListener(value, itemView, appendComma, hierarchy + 1));
         } else if (value instanceof String) {
             itemView.hideIcon();
             valueBuilder.append("\"").append(value.toString()).append("\"");
             if (Utils.isUrl(value.toString())) {
-                valueBuilder.setSpan(textSpan, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                valueBuilder.setSpan(urlSpan, 1, valueBuilder.length() - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                valueBuilder.setSpan(textSpan, valueBuilder.length() - 1, valueBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                valueBuilder.setSpan(new ForegroundColorSpan(TEXT_COLOR), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                valueBuilder.setSpan(new ForegroundColorSpan(URL_COLOR), 1, valueBuilder.length() - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                valueBuilder.setSpan(new ForegroundColorSpan(TEXT_COLOR), valueBuilder.length() - 1, valueBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             } else {
-                valueBuilder.setSpan(textSpan, 0, valueBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                valueBuilder.setSpan(new ForegroundColorSpan(TEXT_COLOR), 0, valueBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         } else if (valueBuilder.length() == 0 || value == null) {
             itemView.hideIcon();
             valueBuilder.append("null");
-            valueBuilder.setSpan(nullSpan, 0, valueBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            valueBuilder.setSpan(new ForegroundColorSpan(NULL_COLOR), 0, valueBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         if (appendComma) {
             valueBuilder.append(",");
@@ -224,7 +232,7 @@ public class JsonViewerAdapter extends BaseJsonViewerAdapter<JsonViewerAdapter.J
                 itemView.setTag(itemView.getRightText());
                 itemView.showRight(isJsonArray ? "[" : "{");
                 JSONArray array = isJsonArray ? (JSONArray) value : ((JSONObject) value).names();
-                for (int i = 0; i < array.length(); i++) {
+                for (int i = 0; array != null && i < array.length(); i++) {
                     JsonItemView childItemView = new JsonItemView(itemView.getContext());
                     Object childValue = array.opt(i);
                     if (isJsonArray) {
