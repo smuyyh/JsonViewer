@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">library</string>
+
+    <string name="icon_plus">\uea0a</string>
+    <string name="icon_minus">\uea0b</string>
+</resources>

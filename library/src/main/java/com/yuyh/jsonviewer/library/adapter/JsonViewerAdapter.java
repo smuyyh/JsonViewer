@@ -1,0 +1,268 @@
+package com.yuyh.jsonviewer.library.adapter;
+
+import android.support.v7.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.yuyh.jsonviewer.library.utils.Utils;
+import com.yuyh.jsonviewer.library.view.JsonItemView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+/**
+ * Created by yuyuhang on 2017/11/29.
+ */
+public class JsonViewerAdapter extends BaseJsonViewerAdapter<JsonViewerAdapter.JsonItemViewHolder> {
+
+    private String jsonStr;
+
+    private JSONObject mJSONObject;
+    private JSONArray mJSONArray;
+
+    public JsonViewerAdapter(String jsonStr) {
+        this.jsonStr = jsonStr;
+
+        Object object = null;
+        try {
+            object = new JSONTokener(jsonStr).nextValue();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (object != null && object instanceof JSONObject) {
+            mJSONObject = (JSONObject) object;
+        } else if (object != null && object instanceof JSONArray) {
+            mJSONArray = (JSONArray) object;
+        } else {
+            throw new IllegalArgumentException("jsonStr is illegal.");
+        }
+    }
+
+    public JsonViewerAdapter(JSONObject jsonObject) {
+        this.mJSONObject = jsonObject;
+        if (mJSONObject == null) {
+            throw new IllegalArgumentException("jsonObject can not be null.");
+        }
+    }
+
+    public JsonViewerAdapter(JSONArray jsonArray) {
+        this.mJSONArray = jsonArray;
+        if (mJSONArray == null) {
+            throw new IllegalArgumentException("jsonArray can not be null.");
+        }
+    }
+
+    @Override
+    public JsonItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new JsonItemViewHolder(new JsonItemView(parent.getContext()));
+    }
+
+    @Override
+    public void onBindViewHolder(JsonItemViewHolder holder, int position) {
+        JsonItemView itemView = holder.itemView;
+        if (mJSONObject != null) {
+            if (position == 0) {
+                itemView.hideLeft();
+                itemView.hideIcon();
+                itemView.showRight("{");
+                return;
+            } else if (position == getItemCount() - 1) {
+                itemView.hideLeft();
+                itemView.hideIcon();
+                itemView.showRight("}");
+                return;
+            }
+
+            String key = mJSONObject.names().optString(position - 1); // 遍历key
+            Object value = mJSONObject.opt(key);
+            if (position < getItemCount() - 2) {
+                handleJsonObject(key, value, itemView, true, 1);
+            } else {
+                handleJsonObject(key, value, itemView, false, 1); // 最后一组，结尾不需要逗号
+            }
+        }
+
+        if (mJSONArray != null) {
+            if (position == 0) {
+                itemView.hideLeft();
+                itemView.hideIcon();
+                itemView.showRight("[");
+                return;
+            }
+            if (position == getItemCount() - 1) {
+                itemView.hideLeft();
+                itemView.hideIcon();
+                itemView.showRight("]");
+                return;
+            }
+
+            Object value = mJSONArray.opt(position - 1); // 遍历array
+            if (position < getItemCount() - 2) {
+                handleJsonArray(value, itemView, true, 1);
+            } else {
+                handleJsonArray(value, itemView, false, 1); // 最后一组，结尾不需要逗号
+            }
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        if (mJSONObject != null) {
+            return mJSONObject.names().length() + 2;
+        }
+        if (mJSONArray != null) {
+            return mJSONArray.length() + 2;
+        }
+        return 0;
+    }
+
+    /**
+     * 处理 value 上级为 JsonObject 的情况，value有key
+     *
+     * @param value
+     * @param key
+     * @param itemView
+     * @param appendComma
+     * @param hierarchy
+     */
+    private void handleJsonObject(String key, Object value, JsonItemView itemView, boolean appendComma, int hierarchy) {
+        SpannableStringBuilder keyBuilder = new SpannableStringBuilder(Utils.getHierarchyStr(hierarchy));
+        keyBuilder.append("\"").append(key).append("\"").append(":");
+        keyBuilder.setSpan(keySpan, 0, keyBuilder.length() - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        keyBuilder.setSpan(bracesSpan, keyBuilder.length() - 1, keyBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        itemView.showLeft(keyBuilder);
+
+        handleValue(value, itemView, appendComma, hierarchy);
+    }
+
+    /**
+     * 处理 value 上级为 JsonArray 的情况，value无key
+     *
+     * @param value
+     * @param itemView
+     * @param appendComma 结尾是否需要逗号(最后一组 value 不需要逗号)
+     * @param hierarchy   缩进层级
+     */
+    private void handleJsonArray(Object value, JsonItemView itemView, boolean appendComma, int hierarchy) {
+        itemView.showLeft(new SpannableStringBuilder(Utils.getHierarchyStr(hierarchy)));
+
+        handleValue(value, itemView, appendComma, hierarchy);
+    }
+
+    /**
+     * @param value
+     * @param itemView
+     * @param appendComma 结尾是否需要逗号(最后一组 key:value 不需要逗号)
+     * @param hierarchy   缩进层级
+     */
+    private void handleValue(Object value, JsonItemView itemView, boolean appendComma, int hierarchy) {
+        SpannableStringBuilder valueBuilder = new SpannableStringBuilder();
+        if (value instanceof Number) {
+            valueBuilder.append(value.toString());
+            valueBuilder.setSpan(numberSpan, 0, valueBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        } else if (value instanceof JSONObject) {
+            itemView.showIcon(true);
+            valueBuilder.append("Object{...}");
+            itemView.setIconClickListener(new JsonItemClickListener(value, itemView, appendComma, hierarchy + 1));
+        } else if (value instanceof JSONArray) {
+            itemView.showIcon(true);
+            valueBuilder.append("Array[").append(String.valueOf(((JSONArray) value).length())).append("]");
+            valueBuilder.setSpan(bracesSpan, 0, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            valueBuilder.setSpan(numberSpan, 6, valueBuilder.length() - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            valueBuilder.setSpan(bracesSpan, valueBuilder.length() - 1, valueBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            itemView.setIconClickListener(new JsonItemClickListener(value, itemView, appendComma, hierarchy + 1));
+        } else if (value instanceof String) {
+            itemView.hideIcon();
+            valueBuilder.append("\"").append(value.toString()).append("\"");
+            if (Utils.isUrl(value.toString())) {
+                valueBuilder.setSpan(textSpan, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                valueBuilder.setSpan(urlSpan, 1, valueBuilder.length() - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                valueBuilder.setSpan(textSpan, valueBuilder.length() - 1, valueBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else {
+                valueBuilder.setSpan(textSpan, 0, valueBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        } else if (valueBuilder.length() == 0 || value == null) {
+            itemView.hideIcon();
+            valueBuilder.append("null");
+            valueBuilder.setSpan(nullSpan, 0, valueBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        if (appendComma) {
+            valueBuilder.append(",");
+        }
+
+        itemView.showRight(valueBuilder);
+    }
+
+    class JsonItemClickListener implements View.OnClickListener {
+
+        private Object value;
+        private JsonItemView itemView;
+        private boolean appendComma;
+        private int hierarchy;
+
+        private boolean isCollapsed = true;
+        private boolean isJsonArray;
+
+        JsonItemClickListener(Object value, JsonItemView itemView, boolean appendComma, int hierarchy) {
+            this.value = value;
+            this.itemView = itemView;
+            this.appendComma = appendComma;
+            this.hierarchy = hierarchy;
+            this.isJsonArray = value != null && value instanceof JSONArray;
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (itemView.getChildCount() == 1) { // 初始（折叠） --> 展开
+                isCollapsed = false;
+                itemView.showIcon(false);
+                itemView.setTag(itemView.getRightText());
+                itemView.showRight(isJsonArray ? "[" : "{");
+                JSONArray array = isJsonArray ? (JSONArray) value : ((JSONObject) value).names();
+                for (int i = 0; i < array.length(); i++) {
+                    JsonItemView childItemView = new JsonItemView(itemView.getContext());
+                    Object childValue = array.opt(i);
+                    if (isJsonArray) {
+                        handleJsonArray(childValue, childItemView, i < array.length() - 1, hierarchy);
+                    } else {
+                        handleJsonObject((String) childValue, ((JSONObject) value).opt((String) childValue), childItemView, i < array.length() - 1, hierarchy);
+                    }
+                    itemView.addViewNoInvalidate(childItemView);
+                }
+
+                JsonItemView childItemView = new JsonItemView(itemView.getContext());
+                StringBuilder builder = new StringBuilder(Utils.getHierarchyStr(hierarchy - 1));
+                builder.append(isJsonArray ? "]" : "}").append(appendComma ? "," : "");
+                childItemView.showRight(builder);
+                itemView.addViewNoInvalidate(childItemView);
+                itemView.requestLayout();
+                itemView.invalidate();
+            } else {                            // 折叠 <--> 展开
+                CharSequence temp = itemView.getRightText();
+                itemView.showRight((CharSequence) itemView.getTag());
+                itemView.setTag(temp);
+                itemView.showIcon(!isCollapsed);
+                for (int i = 1; i < itemView.getChildCount(); i++) {
+                    itemView.getChildAt(i).setVisibility(isCollapsed ? View.VISIBLE : View.GONE);
+                }
+                isCollapsed = !isCollapsed;
+            }
+        }
+    }
+
+    class JsonItemViewHolder extends RecyclerView.ViewHolder {
+
+        JsonItemView itemView;
+
+        JsonItemViewHolder(JsonItemView itemView) {
+            super(itemView);
+            setIsRecyclable(false);
+            this.itemView = itemView;
+        }
+    }
+}
