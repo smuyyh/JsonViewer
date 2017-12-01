@@ -8,7 +8,7 @@ Android JSON viewer, to convert JSON Strings to a Friendly Readable Format, it s
 ## Dependencies
 
 ```
-compile 'com.yuyh.json:jsonviewer:1.0.3'
+compile 'com.yuyh.json:jsonviewer:1.0.4'
 ```
 
 ## Usage
