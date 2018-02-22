@@ -1,6 +1,7 @@
 {
   "xxx": {},
   "current": {
+    "rain": false,
     "feelsLike": {
       "unit": "℃",
       "value": "-6"
