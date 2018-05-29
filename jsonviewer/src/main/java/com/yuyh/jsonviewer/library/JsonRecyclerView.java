@@ -69,6 +69,10 @@ public class JsonRecyclerView extends RecyclerView {
         BaseJsonViewerAdapter.NUMBER_COLOR = color;
     }
 
+    public void setValueBooleanColor(int color) {
+        BaseJsonViewerAdapter.BOOLEAN_COLOR = color;
+    }
+
     public void setValueUrlColor(int color) {
         BaseJsonViewerAdapter.URL_COLOR = color;
     }

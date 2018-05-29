@@ -171,6 +171,9 @@ public class JsonViewerAdapter extends BaseJsonViewerAdapter<JsonViewerAdapter.J
         if (value instanceof Number) {
             valueBuilder.append(value.toString());
             valueBuilder.setSpan(new ForegroundColorSpan(NUMBER_COLOR), 0, valueBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        } else if (value instanceof Boolean) {
+            valueBuilder.append(value.toString());
+            valueBuilder.setSpan(new ForegroundColorSpan(BOOLEAN_COLOR), 0, valueBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         } else if (value instanceof JSONObject) {
             itemView.showIcon(true);
             valueBuilder.append("Object{...}");
