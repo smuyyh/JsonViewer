@@ -65,6 +65,8 @@ public class JsonViewerAdapter extends BaseJsonViewerAdapter<JsonViewerAdapter.J
     @Override
     public void onBindViewHolder(JsonItemViewHolder holder, int position) {
         JsonItemView itemView = holder.itemView;
+        itemView.setTextSize(TEXT_SIZE_DP);
+        itemView.setRightColor(BRACES_COLOR);
         if (mJSONObject != null) {
             if (position == 0) {
                 itemView.hideLeft();
@@ -229,7 +231,7 @@ public class JsonViewerAdapter extends BaseJsonViewerAdapter<JsonViewerAdapter.J
 
         @Override
         public void onClick(View view) {
-            if (itemView.getChildCount() == 1) { // 初始（折叠） --> 展开
+            if (itemView.getChildCount() == 1) { // 初始（折叠） --> 展开""
                 isCollapsed = false;
                 itemView.showIcon(false);
                 itemView.setTag(itemView.getRightText());
@@ -237,6 +239,8 @@ public class JsonViewerAdapter extends BaseJsonViewerAdapter<JsonViewerAdapter.J
                 JSONArray array = isJsonArray ? (JSONArray) value : ((JSONObject) value).names();
                 for (int i = 0; array != null && i < array.length(); i++) {
                     JsonItemView childItemView = new JsonItemView(itemView.getContext());
+                    childItemView.setTextSize(TEXT_SIZE_DP);
+                    childItemView.setRightColor(BRACES_COLOR);
                     Object childValue = array.opt(i);
                     if (isJsonArray) {
                         handleJsonArray(childValue, childItemView, i < array.length() - 1, hierarchy);
@@ -247,6 +251,8 @@ public class JsonViewerAdapter extends BaseJsonViewerAdapter<JsonViewerAdapter.J
                 }
 
                 JsonItemView childItemView = new JsonItemView(itemView.getContext());
+                childItemView.setTextSize(TEXT_SIZE_DP);
+                childItemView.setRightColor(BRACES_COLOR);
                 StringBuilder builder = new StringBuilder(Utils.getHierarchyStr(hierarchy - 1));
                 builder.append(isJsonArray ? "]" : "}").append(appendComma ? "," : "");
                 childItemView.showRight(builder);

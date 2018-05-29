@@ -6,6 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
 
 import com.yuyh.jsonviewer.library.adapter.BaseJsonViewerAdapter;
 import com.yuyh.jsonviewer.library.adapter.JsonViewerAdapter;
@@ -85,7 +87,107 @@ public class JsonRecyclerView extends RecyclerView {
         BaseJsonViewerAdapter.BRACES_COLOR = color;
     }
 
-    public void setTextSize(int sizeDP) {
-        JsonItemView.TEXT_SIZE_DP = sizeDP;
+    public void setTextSize(float sizeDP) {
+        if (sizeDP < 10) {
+            sizeDP = 10;
+        } else if (sizeDP > 30) {
+            sizeDP = 30;
+        }
+
+        if (BaseJsonViewerAdapter.TEXT_SIZE_DP != sizeDP) {
+            BaseJsonViewerAdapter.TEXT_SIZE_DP = sizeDP;
+            if (mAdapter != null) {
+                updateAll(sizeDP);
+            }
+        }
     }
+
+    public void setScaleEnable(boolean enable) {
+        if (enable) {
+            addOnItemTouchListener(touchListener);
+        } else {
+            removeOnItemTouchListener(touchListener);
+        }
+    }
+
+    public void updateAll(float textSize) {
+        LayoutManager manager = getLayoutManager();
+
+        int count = manager.getChildCount();
+
+        for (int i = 0; i < count; i++) {
+            View view = manager.getChildAt(i);
+            loop(view, textSize);
+        }
+    }
+
+    private void loop(View view, float textSize) {
+        if (view instanceof JsonItemView) {
+            JsonItemView group = (JsonItemView) view;
+
+            group.setTextSize(textSize);
+
+            int childCount = group.getChildCount();
+
+            for (int i = 0; i < childCount; i++) {
+                View view1 = group.getChildAt(i);
+                loop(view1, textSize);
+            }
+        }
+    }
+
+    int mode;
+    float oldDist;
+
+    private void zoom(float f) {
+        setTextSize(BaseJsonViewerAdapter.TEXT_SIZE_DP * f);
+    }
+
+    private float spacing(MotionEvent event) {
+        float x = event.getX(0) - event.getX(1);
+        float y = event.getY(0) - event.getY(1);
+        return (float) Math.sqrt(x * x + y * y);
+    }
+
+    private OnItemTouchListener touchListener = new OnItemTouchListener() {
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent event) {
+            switch (event.getAction() & event.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    mode = 1;
+                    break;
+                case MotionEvent.ACTION_UP:
+                    mode = 0;
+                    break;
+                case MotionEvent.ACTION_POINTER_UP:
+                    mode -= 1;
+                    break;
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    oldDist = spacing(event);
+                    mode += 1;
+                    break;
+
+                case MotionEvent.ACTION_MOVE:
+                    if (mode >= 2) {
+                        float newDist = spacing(event);
+                        if (Math.abs(newDist - oldDist) > 0.5f) {
+                            zoom(newDist / oldDist);
+                            oldDist = newDist;
+                        }
+                    }
+                    break;
+            }
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView rv, MotionEvent event) {
+
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+        }
+    };
 }
