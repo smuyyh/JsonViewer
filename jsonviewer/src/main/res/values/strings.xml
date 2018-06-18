@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">library</string>
-
-    <string name="icon_plus">\uea0a</string>
-    <string name="icon_minus">\uea0b</string>
+    <string name="jsonViewer_icon_plus">expand</string>
+    <string name="jsonViewer_icon_minus">collapse</string>
 </resources>

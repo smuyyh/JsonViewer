@@ -1,11 +1,17 @@
 package com.yuyh.jsonviewer.library.view;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,7 +28,7 @@ public class JsonItemView extends LinearLayout {
     private Context mContext;
 
     private TextView mTvLeft, mTvRight;
-    private TextView mTvIcon;
+    private ImageView mIvIcon;
 
     public JsonItemView(Context context) {
         this(context, null);
@@ -42,11 +48,11 @@ public class JsonItemView extends LinearLayout {
 
     private void initView() {
         setOrientation(VERTICAL);
-        LayoutInflater.from(mContext).inflate(R.layout.layout_json_item_view, this, true);
+        LayoutInflater.from(mContext).inflate(R.layout.jsonviewer_layout_item_view, this, true);
 
         mTvLeft = findViewById(R.id.tv_left);
         mTvRight = findViewById(R.id.tv_right);
-        mTvIcon = findViewById(R.id.tv_icon);
+        mIvIcon = findViewById(R.id.iv_icon);
 
         if (TEXT_SIZE_DP < 10) {
             TEXT_SIZE_DP = 10;
@@ -57,7 +63,16 @@ public class JsonItemView extends LinearLayout {
         mTvLeft.setTextSize(TEXT_SIZE_DP);
         mTvRight.setTextSize(TEXT_SIZE_DP);
         mTvRight.setTextColor(BaseJsonViewerAdapter.BRACES_COLOR);
-        mTvIcon.setTextSize(TEXT_SIZE_DP - 4);
+
+        // align the vertically expand/collapse icon to the text
+        int textSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DP / 2, getResources().getDisplayMetrics());
+
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mIvIcon.getLayoutParams();
+        layoutParams.height = textSize;
+        layoutParams.width = textSize;
+        layoutParams.topMargin = textSize / 4;
+
+        mIvIcon.setLayoutParams(layoutParams);
     }
 
     public void hideLeft() {
@@ -87,16 +102,17 @@ public class JsonItemView extends LinearLayout {
     }
 
     public void hideIcon() {
-        mTvIcon.setVisibility(GONE);
+        mIvIcon.setVisibility(GONE);
     }
 
     public void showIcon(boolean isPlus) {
-        mTvIcon.setVisibility(VISIBLE);
-        mTvIcon.setText(getResources().getString(isPlus ? R.string.icon_plus : R.string.icon_minus));
+        mIvIcon.setVisibility(VISIBLE);
+        mIvIcon.setImageResource(isPlus ? R.drawable.jsonviewer_plus : R.drawable.jsonviewer_minus);
+        mIvIcon.setContentDescription(getResources().getString(isPlus ? R.string.jsonViewer_icon_plus : R.string.jsonViewer_icon_minus));
     }
 
     public void setIconClickListener(OnClickListener listener) {
-        mTvIcon.setOnClickListener(listener);
+        mIvIcon.setOnClickListener(listener);
     }
 
     public void addViewNoInvalidate(View child) {
