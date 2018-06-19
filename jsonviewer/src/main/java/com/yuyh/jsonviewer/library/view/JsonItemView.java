@@ -16,14 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yuyh.jsonviewer.library.R;
-import com.yuyh.jsonviewer.library.adapter.BaseJsonViewerAdapter;
 
 /**
  * Created by yuyuhang on 2017/11/29.
  */
 public class JsonItemView extends LinearLayout {
-
-    public static int TEXT_SIZE_DP = 12;
 
     private Context mContext;
 
@@ -53,11 +50,13 @@ public class JsonItemView extends LinearLayout {
         mTvLeft = findViewById(R.id.tv_left);
         mTvRight = findViewById(R.id.tv_right);
         mIvIcon = findViewById(R.id.iv_icon);
+    }
 
-        if (TEXT_SIZE_DP < 10) {
-            TEXT_SIZE_DP = 10;
-        } else if (TEXT_SIZE_DP > 30) {
-            TEXT_SIZE_DP = 30;
+    public void setTextSize(float textSizeDp) {
+        if (textSizeDp < 10) {
+            textSizeDp = 10;
+        } else if (textSizeDp > 30) {
+            textSizeDp = 30;
         }
 
         mTvLeft.setTextSize(TEXT_SIZE_DP);
@@ -73,6 +72,10 @@ public class JsonItemView extends LinearLayout {
         layoutParams.topMargin = textSize / 4;
 
         mIvIcon.setLayoutParams(layoutParams);
+    }
+
+    public void setRightColor(int color) {
+        mTvRight.setTextColor(color);
     }
 
     public void hideLeft() {

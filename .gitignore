@@ -1,6 +1,11 @@
-### Android template
-
-# OSX files
+*.iml
+.gradle
+/.idea
+/.idea/misc.xml
+/local.properties
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
 .DS_Store
 # Windows thumbnail db
 Thumbs.db

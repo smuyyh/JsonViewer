@@ -15,4 +15,6 @@ public abstract class BaseJsonViewerAdapter<VH extends RecyclerView.ViewHolder> 
     public static int URL_COLOR = 0xFF66D2D5;
     public static int NULL_COLOR = 0xFFEF5935;
     public static int BRACES_COLOR = 0xFF4A555F;
+
+    public static float TEXT_SIZE_DP = 12;
 }

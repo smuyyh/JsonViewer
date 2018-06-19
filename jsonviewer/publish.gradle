@@ -4,7 +4,7 @@ apply plugin: 'com.jfrog.bintray'
 def siteUrl = 'https://github.com/smuyyh/JsonViewer'    // Git项目主页
 def gitUrl = 'https://github.com/smuyyh/JsonViewer.git' // Git仓库url
 group = "com.yuyh.json" // 一般为包名
-version = "1.0.3" // 版本号
+version = "1.0.5" // 版本号
 
 install {
     repositories.mavenInstaller {
