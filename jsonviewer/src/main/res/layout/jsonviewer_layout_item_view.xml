@@ -22,6 +22,7 @@
         android:layout_marginTop="1dp"
         android:adjustViewBounds="true"
         android:contentDescription="@string/jsonViewer_icon_plus"
+        android:padding="2dp"
         android:scaleType="fitCenter"
         android:src="@drawable/jsonviewer_plus"
         android:visibility="gone"

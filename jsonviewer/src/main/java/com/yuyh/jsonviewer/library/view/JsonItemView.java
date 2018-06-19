@@ -1,10 +1,6 @@
 package com.yuyh.jsonviewer.library.view;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -16,11 +12,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yuyh.jsonviewer.library.R;
+import com.yuyh.jsonviewer.library.adapter.BaseJsonViewerAdapter;
 
 /**
  * Created by yuyuhang on 2017/11/29.
  */
 public class JsonItemView extends LinearLayout {
+
+    public static int TEXT_SIZE_DP = 12;
 
     private Context mContext;
 
@@ -53,23 +52,25 @@ public class JsonItemView extends LinearLayout {
     }
 
     public void setTextSize(float textSizeDp) {
-        if (textSizeDp < 10) {
-            textSizeDp = 10;
+        if (textSizeDp < 12) {
+            textSizeDp = 12;
         } else if (textSizeDp > 30) {
             textSizeDp = 30;
         }
+
+        TEXT_SIZE_DP = (int) textSizeDp;
 
         mTvLeft.setTextSize(TEXT_SIZE_DP);
         mTvRight.setTextSize(TEXT_SIZE_DP);
         mTvRight.setTextColor(BaseJsonViewerAdapter.BRACES_COLOR);
 
         // align the vertically expand/collapse icon to the text
-        int textSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DP / 2, getResources().getDisplayMetrics());
+        int textSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DP, getResources().getDisplayMetrics());
 
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mIvIcon.getLayoutParams();
         layoutParams.height = textSize;
         layoutParams.width = textSize;
-        layoutParams.topMargin = textSize / 4;
+        layoutParams.topMargin = textSize / 5;
 
         mIvIcon.setLayoutParams(layoutParams);
     }
