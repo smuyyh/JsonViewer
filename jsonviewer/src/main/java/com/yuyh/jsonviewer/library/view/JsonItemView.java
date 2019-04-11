@@ -68,10 +68,13 @@ public class JsonItemView extends LinearLayout {
         int textSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DP, getResources().getDisplayMetrics());
 
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mIvIcon.getLayoutParams();
-        layoutParams.height = textSize;
-        layoutParams.width = textSize;
-        layoutParams.topMargin = textSize / 5;
+        int padding = dip2px(2);
+        int paddingRight = padding + dip2px(1);
+        layoutParams.height = LinearLayout.LayoutParams.MATCH_PARENT;
+        layoutParams.width = textSize + (paddingRight - padding);
+        layoutParams.setMargins(0,0,0,0);
 
+        mIvIcon.setPadding(padding, textSize / 5, paddingRight, 0);
         mIvIcon.setLayoutParams(layoutParams);
     }
 
@@ -128,5 +131,10 @@ public class JsonItemView extends LinearLayout {
             }
         }
         addViewInLayout(child, -1, params);
+    }
+
+    private int dip2px (float dipValue) {
+        final float scale = getResources().getDisplayMetrics().density;
+        return (int) (dipValue * scale + 0.5f);
     }
 }
