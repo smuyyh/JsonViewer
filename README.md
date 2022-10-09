@@ -8,7 +8,21 @@ Android JSON viewer, to convert JSON Strings to a Friendly Readable Format, it s
 ## Dependencies
 
 ```
-compile 'com.yuyh.json:jsonviewer:1.0.6'
+buildscript {
+    repositories {
+        ...
+        maven { url "https://jitpack.io" }
+    }
+    dependencies {
+        ...
+    }
+}
+```
+
+```
+dependencies {
+    implementation 'com.github.smuyyh:JsonViewer:1.0.7'
+}
 ```
 
 ## Usage
