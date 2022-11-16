@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/itemExpand"
+        android:icon="@android:drawable/btn_plus"
+        android:title="expand"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/itemCollapse"
+        android:icon="@android:drawable/btn_minus"
+        android:title="collapse"
+        app:showAsAction="always" />
+
+</menu>

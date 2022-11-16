@@ -190,4 +190,13 @@ public class JsonRecyclerView extends RecyclerView {
 
         }
     };
+
+
+    public void expandAll() {
+        mAdapter.expandAll();
+    }
+
+    public void collapseAll() {
+        mAdapter.collapseAll();
+    }
 }
