@@ -17,4 +17,8 @@ public abstract class BaseJsonViewerAdapter<VH extends RecyclerView.ViewHolder> 
     public static int BRACES_COLOR = 0xFF4A555F;
 
     public static float TEXT_SIZE_DP = 12;
+
+    public abstract void expandAll();
+
+    public abstract void collapseAll();
 }

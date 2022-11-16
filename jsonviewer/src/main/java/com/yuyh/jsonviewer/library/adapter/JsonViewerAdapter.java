@@ -25,6 +25,8 @@ public class JsonViewerAdapter extends BaseJsonViewerAdapter<JsonViewerAdapter.J
     private JSONObject mJSONObject;
     private JSONArray mJSONArray;
 
+    private boolean clicked = false;
+
     public JsonViewerAdapter(String jsonStr) {
         this.jsonStr = jsonStr;
 
@@ -181,6 +183,9 @@ public class JsonViewerAdapter extends BaseJsonViewerAdapter<JsonViewerAdapter.J
             valueBuilder.append("Object{...}");
             valueBuilder.setSpan(new ForegroundColorSpan(BRACES_COLOR), 0, valueBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             itemView.setIconClickListener(new JsonItemClickListener(value, itemView, appendComma, hierarchy + 1));
+            if (clicked) {
+                itemView.clickIcon();
+            }
         } else if (value instanceof JSONArray) {
             itemView.showIcon(true);
             valueBuilder.append("Array[").append(String.valueOf(((JSONArray) value).length())).append("]");
@@ -189,6 +194,9 @@ public class JsonViewerAdapter extends BaseJsonViewerAdapter<JsonViewerAdapter.J
             valueBuilder.setSpan(new ForegroundColorSpan(NUMBER_COLOR), 6, len - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             valueBuilder.setSpan(new ForegroundColorSpan(BRACES_COLOR), len - 1, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             itemView.setIconClickListener(new JsonItemClickListener(value, itemView, appendComma, hierarchy + 1));
+            if (clicked) {
+                itemView.clickIcon();
+            }
         } else if (value instanceof String) {
             itemView.hideIcon();
             valueBuilder.append("\"").append(value.toString()).append("\"");
@@ -210,6 +218,19 @@ public class JsonViewerAdapter extends BaseJsonViewerAdapter<JsonViewerAdapter.J
 
         itemView.showRight(valueBuilder);
     }
+
+    @Override
+    public void expandAll() {
+        clicked = true;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void collapseAll() {
+        clicked = false;
+        notifyDataSetChanged();
+    }
+
 
     class JsonItemClickListener implements View.OnClickListener {
 
