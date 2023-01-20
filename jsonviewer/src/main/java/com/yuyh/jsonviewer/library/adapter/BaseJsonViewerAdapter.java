@@ -1,7 +1,7 @@
 package com.yuyh.jsonviewer.library.adapter;
 
-import android.support.v7.widget.RecyclerView;
-import android.text.style.ForegroundColorSpan;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by yuyuhang on 2017/11/30.

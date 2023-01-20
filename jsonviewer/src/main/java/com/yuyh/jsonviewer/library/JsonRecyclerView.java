@@ -1,13 +1,13 @@
 package com.yuyh.jsonviewer.library;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.yuyh.jsonviewer.library.adapter.BaseJsonViewerAdapter;
 import com.yuyh.jsonviewer.library.adapter.JsonViewerAdapter;
