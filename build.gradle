@@ -5,24 +5,13 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.2'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+        classpath 'com.android.tools.build:gradle:8.2.2'
     }
 }
-
 allprojects {
     repositories {
         google()
         mavenCentral()
         maven { url "https://jitpack.io" }
     }
-
-    tasks.withType(Javadoc) {
-        options.addStringOption('Xdoclint:none', '-quiet')
-        options.addStringOption('encoding', 'UTF-8')
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }

@@ -26,6 +26,7 @@ public class JsonItemView extends LinearLayout {
 
     private TextView mTvLeft, mTvRight;
     private ImageView mIvIcon;
+    private View mClickableArea;
 
     public JsonItemView(Context context) {
         this(context, null);
@@ -50,6 +51,7 @@ public class JsonItemView extends LinearLayout {
         mTvLeft = findViewById(R.id.tv_left);
         mTvRight = findViewById(R.id.tv_right);
         mIvIcon = findViewById(R.id.iv_icon);
+        mClickableArea = findViewById(R.id.clickableArea);
     }
 
     public void setTextSize(float textSizeDp) {
@@ -117,13 +119,15 @@ public class JsonItemView extends LinearLayout {
     }
 
     public void setIconClickListener(OnClickListener listener) {
-        mIvIcon.setOnClickListener(listener);
-        mTvLeft.setOnClickListener(listener);
-        mTvRight.setOnClickListener(listener);
+        mClickableArea.setOnClickListener(listener);
     }
 
     public void clickIcon(){
-        mIvIcon.performClick();
+        mClickableArea.performClick();
+    }
+
+    public void setIconColor(int color){
+        mIvIcon.setColorFilter(color);
     }
 
     public void addViewNoInvalidate(View child) {

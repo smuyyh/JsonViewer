@@ -1,12 +1,14 @@
 package com.yuyh.jsonviewer;
 
-import android.support.v7.app.AppCompatActivity;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.widget.HorizontalScrollView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.yuyh.jsonviewer.library.JsonRecyclerView;
 
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclewView = findViewById(R.id.rv_json);
         mRecyclewView.setScaleEnable(true);
+        mRecyclewView.setIconColor(Color.YELLOW);
         mRecyclewView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() { // 避免双指缩放与上下左右滑动冲突
             @Override
             public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent event) {

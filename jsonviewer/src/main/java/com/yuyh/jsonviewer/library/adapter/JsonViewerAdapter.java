@@ -302,6 +302,7 @@ public class JsonViewerAdapter extends BaseJsonViewerAdapter<JsonViewerAdapter.J
             super(itemView);
             setIsRecyclable(false);
             this.itemView = itemView;
+            this.itemView.setIconColor(ICON_COLOR);
         }
     }
 }

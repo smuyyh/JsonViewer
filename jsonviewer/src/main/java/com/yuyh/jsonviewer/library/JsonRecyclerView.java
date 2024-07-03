@@ -87,6 +87,10 @@ public class JsonRecyclerView extends RecyclerView {
         BaseJsonViewerAdapter.BRACES_COLOR = color;
     }
 
+    public void setIconColor(int color){
+        BaseJsonViewerAdapter.ICON_COLOR = color;
+    }
+
     public void setTextSize(float sizeDP) {
         if (sizeDP < 10) {
             sizeDP = 10;
